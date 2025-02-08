@@ -21,5 +21,15 @@ RSpec.describe "/carts", type: :request do
         expect { subject }.to change { cart_item.reload.quantity }.by(2)
       end
     end
+
+    context 'delete product of cart' do
+      subject do
+        delete delete_item_cart_url(product.id)
+      end
+
+      it 'updates the quantity of the existing item in the cart' do
+        expect { subject }.to change(CartItem, :count).by(-1)
+      end
+    end
   end
 end

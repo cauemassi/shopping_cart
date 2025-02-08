@@ -18,12 +18,18 @@ class CartsController < ApplicationController
 
       @cart_item.save!
     else
-      render json: "error: Product not in Cart to be add. Please first add Product"
+      render json: "Product not in Cart to be add. Please first add Product", status: :unprocessable_entity
     end
   end
 
   def delete_items
+    @cart_item = CartItem.find_by(cart: @cart, product: params[:product_id])
 
+    if @cart_item
+      @cart_item.destroy!
+    else
+      render json: "Product not in Cart to be deleted", status: :unprocessable_entity
+    end
   end
 
   private
