@@ -8,6 +8,7 @@ class CartsController < ApplicationController
   end
 
   def show
+    render json: @cart
   end
 
   def add_items
@@ -43,9 +44,5 @@ class CartsController < ApplicationController
       @cart = Cart.create!(total_price: 0)
       cookies[cart_id] = @cart.id
     end
-  end
-
-  def product_params
-    params.require(:cart).permit(:product_id, :quantity)
   end
 end

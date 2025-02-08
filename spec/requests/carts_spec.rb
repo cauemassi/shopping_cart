@@ -1,7 +1,53 @@
 require 'rails_helper'
 
 RSpec.describe "/carts", type: :request do
-  pending "TODO: Escreva os testes de comportamento do controller de carrinho necessários para cobrir a sua implmentação #{__FILE__}"
+  describe "SHOW /cart" do
+    let(:cart) { Cart.create!(total_price: 0) }
+    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+    let(:product2) { Product.create!(name: "Test Product 2", price: 40.0) }
+    let!(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
+    let!(:cart_item2) { CartItem.create!(cart: cart, product: product2, quantity: 2) }
+
+    before do
+      cookies[:cart_id] = cart.id
+    end
+
+    context 'show cart with products' do
+      subject do
+        get '/cart'
+      end
+
+      it 'can see cart informations' do
+        subject
+
+        response_body = JSON.parse(response.body)
+
+        expected_array = {
+          'id' => cart.id,
+          'products' => [
+            {
+              'id' => product.id,
+              'name' => product.name,
+              'quantity' => cart_item.quantity,
+              'unit_price' => product.price.to_s,
+              'total_price' => (cart_item.quantity * product.price).to_s
+            },
+            {
+              'id' => product2.id,
+              'name' => product2.name,
+              'quantity' => cart_item2.quantity,
+              'unit_price' => product2.price.to_s,
+              'total_price' => (cart_item2.quantity * product2.price).to_s
+            }
+          ],
+          'total_price' => (cart_item.quantity * product.price + cart_item2.quantity * product2.price).to_s
+        }
+
+        expect(response_body).to eq expected_array
+      end
+    end
+  end
+
   describe "POST /add_items" do
     let(:cart) { Cart.create!(total_price: 0) }
     let(:product) { Product.create!(name: "Test Product", price: 10.0) }

@@ -44,4 +44,8 @@ RSpec.describe Cart, type: :model do
       expect { shopping_cart.remove_if_abandoned }.to change { Cart.count }.by(0)
     end
   end
+
+  context 'relations' do
+    it { is_expected.to have_many(:cart_items) }
+  end
 end
