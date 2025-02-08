@@ -21,6 +21,16 @@ RSpec.describe "/carts", type: :request do
         expect { subject }.to change { cart_item.reload.quantity }.by(2)
       end
     end
+  end
+
+  describe "DELETE cart/delete_items" do
+    let(:cart) { Cart.create!(total_price: 0) }
+    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+    let!(:cart_item) { CartItem.create(cart: cart, product: product, quantity: 1) }
+
+    before do
+      cookies[:cart_id] = cart.id
+    end
 
     context 'delete product of cart' do
       subject do
