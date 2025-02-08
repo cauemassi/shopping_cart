@@ -18,7 +18,7 @@ class CartsController < ApplicationController
 
       @cart_item.save!
     else
-      render json: "Product not in Cart to be add. Please first add Product", status: :unprocessable_entity
+      render json: "Product is not in the cart to be added. Please first add Product", status: :unprocessable_entity
     end
   end
 
@@ -28,7 +28,7 @@ class CartsController < ApplicationController
     if @cart_item
       @cart_item.destroy!
     else
-      render json: "Product not in Cart to be deleted", status: :unprocessable_entity
+      render json: "Product is not in the cart to be deleted", status: :unprocessable_entity
     end
   end
 
