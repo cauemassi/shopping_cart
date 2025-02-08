@@ -2,14 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "/carts", type: :request do
   describe "POST /cart" do
-    let(:cart) { Cart.create!(total_price: 0) }
-    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+    context 'create product in cart' do
+      let(:cart) { Cart.create!(total_price: 0) }
+      let(:product) { Product.create!(name: "Test Product", price: 10.0) }
 
-    before do
-      cookies[:cart_id] = cart.id
-    end
-
-    context 'show cart with products' do
+      before do
+        cookies[:cart_id] = cart.id
+      end
       subject do
         post '/cart', params: { product_id: product.id, quantity: 2 }
       end
@@ -34,6 +33,58 @@ RSpec.describe "/carts", type: :request do
         }
 
         expect(response_body).to eq expected_array
+      end
+    end
+
+    context 'create product and cart' do
+      let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+
+      before do
+        cookies[:cart_id] = nil
+      end
+      subject do
+        post '/cart', params: { product_id: product.id, quantity: 2 }
+      end
+
+      it 'can see cart informations' do
+        subject
+
+        response_body = JSON.parse(response.body)
+
+        expected_array = {
+          'id' => Cart.first.id,
+          'products' => [
+            {
+              'id' => product.id,
+              'name' => product.name,
+              'quantity' => 2,
+              'unit_price' => product.price.to_s,
+              'total_price' => (2 * product.price).to_s
+            }
+          ],
+          'total_price' => (2 * product.price).to_s
+        }
+
+        expect(response_body).to eq expected_array
+      end
+    end
+
+    context 'cant create product because already exist in cart' do
+      let(:cart) { Cart.create!(total_price: 0) }
+      let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+      let!(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
+
+      before do
+        cookies[:cart_id] = cart.id
+      end
+      subject do
+        post '/cart', params: { product_id: product.id, quantity: 2 }
+      end
+
+      it 'can see error' do
+        subject
+
+        expect(response.body).to eq("Product already exist in cart. Please add product in cart")
       end
     end
   end

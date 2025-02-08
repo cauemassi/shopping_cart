@@ -4,11 +4,16 @@ class CartsController < ApplicationController
   before_action :set_cart
 
   def create
-    @cart_item = CartItem.new(cart: @cart, product_id: params[:product_id], quantity: params[:quantity])
+    @cart_item = CartItem.find_or_initialize_by(cart: @cart, product_id: params[:product_id])
 
-    @cart_item.save!
+    if @cart_item.id.blank?
+      @cart_item.quantity = params[:quantity]
+      @cart_item.save!
 
-    render json: @cart
+      render json: @cart
+    else
+      render json: "Product already exist in cart. Please add product in cart", status: :unprocessable_entity
+    end
   end
 
   def show
@@ -42,11 +47,11 @@ class CartsController < ApplicationController
   def set_cart
     cart_id = cookies[:cart_id]
 
-    if cart_id
+    if cart_id.present?
       @cart = Cart.find(cart_id)
     else
       @cart = Cart.create!(total_price: 0)
-      cookies[cart_id] = @cart.id
+      cookies["cart_id"] = @cart.id
     end
   end
 end
