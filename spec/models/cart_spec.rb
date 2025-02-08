@@ -10,7 +10,7 @@ RSpec.describe Cart, type: :model do
   end
 
   describe 'mark_as_abandoned' do
-    let(:shopping_cart) { create(:shopping_cart) }
+    let(:shopping_cart) { FactoryBot.create(:shopping_cart) }
 
     it 'marks the shopping cart as abandoned if inactive for a certain time' do
       shopping_cart.update(last_interaction_at: 3.hours.ago)
@@ -18,12 +18,30 @@ RSpec.describe Cart, type: :model do
     end
   end
 
+  describe 'keep_cart_active' do
+    let(:shopping_cart) { FactoryBot.create(:shopping_cart) }
+
+    it 'dont change to abandoned' do
+      shopping_cart.update(last_interaction_at: 1.hours.ago)
+      expect(shopping_cart.abandoned).to eq(false)
+    end
+  end
+
   describe 'remove_if_abandoned' do
-    let(:shopping_cart) { create(:shopping_cart, last_interaction_at: 7.days.ago) }
+    let(:shopping_cart) { FactoryBot.create(:shopping_cart, last_interaction_at: 7.days.ago) }
 
     it 'removes the shopping cart if abandoned for a certain time' do
       shopping_cart.mark_as_abandoned
       expect { shopping_cart.remove_if_abandoned }.to change { Cart.count }.by(-1)
+    end
+  end
+
+  describe 'dont_remove_if_abandoned' do
+    let(:shopping_cart) { FactoryBot.create(:shopping_cart, last_interaction_at: 3.days.ago) }
+
+    it 'dont removes the shopping cart if abandoned for a certain time' do
+      shopping_cart.mark_as_abandoned
+      expect { shopping_cart.remove_if_abandoned }.to change { Cart.count }.by(0)
     end
   end
 end
