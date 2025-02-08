@@ -4,7 +4,11 @@ class CartsController < ApplicationController
   before_action :set_cart
 
   def create
+    @cart_item = CartItem.new(cart: @cart, product_id: params[:product_id], quantity: params[:quantity])
 
+    @cart_item.save!
+
+    render json: @cart
   end
 
   def show

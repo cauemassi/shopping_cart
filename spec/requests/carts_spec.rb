@@ -1,6 +1,43 @@
 require 'rails_helper'
 
 RSpec.describe "/carts", type: :request do
+  describe "POST /cart" do
+    let(:cart) { Cart.create!(total_price: 0) }
+    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+
+    before do
+      cookies[:cart_id] = cart.id
+    end
+
+    context 'show cart with products' do
+      subject do
+        post '/cart', params: { product_id: product.id, quantity: 2 }
+      end
+
+      it 'can see cart informations' do
+        subject
+
+        response_body = JSON.parse(response.body)
+
+        expected_array = {
+          'id' => cart.id,
+          'products' => [
+            {
+              'id' => product.id,
+              'name' => product.name,
+              'quantity' => 2,
+              'unit_price' => product.price.to_s,
+              'total_price' => (2 * product.price).to_s
+            }
+          ],
+          'total_price' => (2 * product.price).to_s
+        }
+
+        expect(response_body).to eq expected_array
+      end
+    end
+  end
+
   describe "SHOW /cart" do
     let(:cart) { Cart.create!(total_price: 0) }
     let(:product) { Product.create!(name: "Test Product", price: 10.0) }
