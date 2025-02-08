@@ -15,12 +15,10 @@ gem 'guard'
 gem 'guard-livereload', require: false
 
 gem 'active_model_serializers'
-gem 'pry'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem 'rspec-rails', '~> 6.1.0'
-end
-
-group :development do
+  gem 'factory_bot_rails', '~> 6.2'
+  gem 'pry'
 end
