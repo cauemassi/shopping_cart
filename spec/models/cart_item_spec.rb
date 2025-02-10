@@ -12,7 +12,7 @@ RSpec.describe CartItem, type: :model do
 
   context 'Update total price' do
 
-    let(:cart) { Cart.create!(total_price: 0) }
+    let(:cart) { FactoryBot.create(:shopping_cart) }
     let(:product) { Product.create!(name: "Test Product", price: 10.0) }
     let(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
 

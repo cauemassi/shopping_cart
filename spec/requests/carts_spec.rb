@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "/carts", type: :request do
   describe "POST /cart" do
     context 'create product in cart' do
-      let(:cart) { Cart.create!(total_price: 0) }
+      let(:cart) { FactoryBot.create(:shopping_cart) }
       let(:product) { Product.create!(name: "Test Product", price: 10.0) }
 
       before do
@@ -70,7 +70,7 @@ RSpec.describe "/carts", type: :request do
     end
 
     context 'cant create product because already exist in cart' do
-      let(:cart) { Cart.create!(total_price: 0) }
+      let(:cart) { FactoryBot.create(:shopping_cart) }
       let(:product) { Product.create!(name: "Test Product", price: 10.0) }
       let!(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
 
@@ -90,7 +90,7 @@ RSpec.describe "/carts", type: :request do
   end
 
   describe "SHOW /cart" do
-    let(:cart) { Cart.create!(total_price: 0) }
+    let(:cart) { FactoryBot.create(:shopping_cart) }
     let(:product) { Product.create!(name: "Test Product", price: 10.0) }
     let(:product2) { Product.create!(name: "Test Product 2", price: 40.0) }
     let!(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
@@ -137,7 +137,7 @@ RSpec.describe "/carts", type: :request do
   end
 
   describe "POST /add_items" do
-    let(:cart) { Cart.create!(total_price: 0) }
+    let(:cart) { FactoryBot.create(:shopping_cart) }
     let(:product) { Product.create!(name: "Test Product", price: 10.0) }
 
     before do
@@ -172,7 +172,7 @@ RSpec.describe "/carts", type: :request do
   end
 
   describe "DELETE cart/delete_items" do
-    let(:cart) { Cart.create!(total_price: 0) }
+    let(:cart) { FactoryBot.create(:shopping_cart) }
     let(:product) { Product.create!(name: "Test Product", price: 10.0) }
 
     before do
