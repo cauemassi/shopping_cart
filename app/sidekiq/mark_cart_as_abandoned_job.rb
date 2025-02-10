@@ -4,8 +4,7 @@ class MarkCartAsAbandonedJob
 
   def perform
     carts = Cart.where(abandoned: false)
-    carts.each do |cart|
-      cart.mark_as_abandoned
-    end
+
+    carts.each(&:mark_as_abandoned)
   end
 end
