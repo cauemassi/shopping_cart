@@ -1,0 +1,26 @@
+require:
+  - rubocop-rails
+
+AllCops:
+  StyleGuideBaseURL: https://rubystyle.guide
+  NewCops: enable
+  Include:
+    - app/**/*
+    - spec/**/*
+  Exclude:
+    - db/schema.rb
+    - bin/*
+    - config.ru
+    - Rakefile
+    - public/*
+    - cache/bundler/**/*
+    - vendor/**/*
+    - app/views/**/*
+    - "**/*/.keep"
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
+Style/Documentation:
+  Enabled: false

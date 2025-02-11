@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Cart, type: :model do
@@ -5,7 +7,7 @@ RSpec.describe Cart, type: :model do
     it 'validates numericality of total_price' do
       cart = described_class.new(total_price: -1)
       expect(cart.valid?).to be_falsey
-      expect(cart.errors[:total_price]).to include("must be greater than or equal to 0")
+      expect(cart.errors[:total_price]).to include('must be greater than or equal to 0')
     end
   end
 
@@ -22,7 +24,7 @@ RSpec.describe Cart, type: :model do
     let(:shopping_cart) { FactoryBot.create(:shopping_cart) }
 
     it 'dont change to abandoned' do
-      shopping_cart.update(last_interaction_at: 1.hours.ago)
+      shopping_cart.update(last_interaction_at: 1.hour.ago)
       expect(shopping_cart.abandoned).to eq(false)
     end
   end

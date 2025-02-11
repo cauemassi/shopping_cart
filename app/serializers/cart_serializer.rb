@@ -1,6 +1,7 @@
-class CartSerializer < ActiveModel::Serializer
-  attributes :id, :products, :total_price, 
+# frozen_string_literal: true
 
+class CartSerializer < ActiveModel::Serializer
+  attributes :id, :products, :total_price
   def products
     object.cart_items.map do |cart_item|
       {

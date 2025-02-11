@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "/carts", type: :request do
-  describe "POST /cart" do
+RSpec.describe '/carts', type: :request do
+  describe 'POST /cart' do
     context 'create product in cart' do
       let(:cart) { FactoryBot.create(:shopping_cart) }
-      let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+      let(:product) { Product.create!(name: 'Test Product', price: 10.0) }
 
       before do
         cookies[:cart_id] = cart.id
@@ -16,7 +18,7 @@ RSpec.describe "/carts", type: :request do
       it 'can see cart informations' do
         subject
 
-        response_body = JSON.parse(response.body)
+        response_body = response.parsed_body
 
         expected_array = {
           'id' => cart.id,
@@ -37,7 +39,7 @@ RSpec.describe "/carts", type: :request do
     end
 
     context 'create product and cart' do
-      let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+      let(:product) { Product.create!(name: 'Test Product', price: 10.0) }
 
       before do
         cookies[:cart_id] = nil
@@ -49,7 +51,7 @@ RSpec.describe "/carts", type: :request do
       it 'can see cart informations' do
         subject
 
-        response_body = JSON.parse(response.body)
+        response_body = response.parsed_body
 
         expected_array = {
           'id' => Cart.first.id,
@@ -71,7 +73,7 @@ RSpec.describe "/carts", type: :request do
 
     context 'cant create product because already exist in cart' do
       let(:cart) { FactoryBot.create(:shopping_cart) }
-      let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+      let(:product) { Product.create!(name: 'Test Product', price: 10.0) }
       let!(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
 
       before do
@@ -84,15 +86,15 @@ RSpec.describe "/carts", type: :request do
       it 'can see error' do
         subject
 
-        expect(response.body).to eq("Product already exist in cart. Please add product in cart")
+        expect(response.body).to eq('Product already exist in cart. Please add product in cart')
       end
     end
   end
 
-  describe "SHOW /cart" do
+  describe 'SHOW /cart' do
     let(:cart) { FactoryBot.create(:shopping_cart) }
-    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
-    let(:product2) { Product.create!(name: "Test Product 2", price: 40.0) }
+    let(:product) { Product.create!(name: 'Test Product', price: 10.0) }
+    let(:product2) { Product.create!(name: 'Test Product 2', price: 40.0) }
     let!(:cart_item) { CartItem.create!(cart: cart, product: product, quantity: 3) }
     let!(:cart_item2) { CartItem.create!(cart: cart, product: product2, quantity: 2) }
 
@@ -108,7 +110,7 @@ RSpec.describe "/carts", type: :request do
       it 'can see cart informations' do
         subject
 
-        response_body = JSON.parse(response.body)
+        response_body = response.parsed_body
 
         expected_array = {
           'id' => cart.id,
@@ -128,7 +130,7 @@ RSpec.describe "/carts", type: :request do
               'total_price' => (cart_item2.quantity * product2.price).to_s
             }
           ],
-          'total_price' => (cart_item.quantity * product.price + cart_item2.quantity * product2.price).to_s
+          'total_price' => ((cart_item.quantity * product.price) + (cart_item2.quantity * product2.price)).to_s
         }
 
         expect(response_body).to eq expected_array
@@ -136,9 +138,9 @@ RSpec.describe "/carts", type: :request do
     end
   end
 
-  describe "POST /add_items" do
+  describe 'POST /add_items' do
     let(:cart) { FactoryBot.create(:shopping_cart) }
-    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+    let(:product) { Product.create!(name: 'Test Product', price: 10.0) }
 
     before do
       cookies[:cart_id] = cart.id
@@ -158,7 +160,6 @@ RSpec.describe "/carts", type: :request do
     end
 
     context 'when the product not is in the cart' do
-
       subject do
         post '/cart/add_items', params: { product_id: product.id, quantity: 1 }, as: :json
       end
@@ -166,14 +167,14 @@ RSpec.describe "/carts", type: :request do
       it 'updates the quantity of the existing item in the cart' do
         subject
 
-        expect(response.body).to eq("Product is not in the cart to be added. Please first add Product")
+        expect(response.body).to eq('Product is not in the cart to be added. Please first add Product')
       end
     end
   end
 
-  describe "DELETE cart/delete_items" do
+  describe 'DELETE cart/delete_items' do
     let(:cart) { FactoryBot.create(:shopping_cart) }
-    let(:product) { Product.create!(name: "Test Product", price: 10.0) }
+    let(:product) { Product.create!(name: 'Test Product', price: 10.0) }
 
     before do
       cookies[:cart_id] = cart.id
@@ -198,7 +199,7 @@ RSpec.describe "/carts", type: :request do
       it 'updates the quantity of the existing item in the cart' do
         subject
 
-        expect(response.body).to eq("Product is not in the cart to be deleted")
+        expect(response.body).to eq('Product is not in the cart to be deleted')
       end
     end
   end

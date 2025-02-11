@@ -1,4 +1,6 @@
-require "rails_helper"
+# frozen_string_literal: true
+
+require 'rails_helper'
 
 RSpec.describe CartsController, type: :routing do
   describe 'routes' do
@@ -15,7 +17,7 @@ RSpec.describe CartsController, type: :routing do
     end
 
     it 'routes to #delete_items via DELETE' do
-      expect(delete: '/cart/1').to route_to('carts#delete_items', product_id: "1")
+      expect(delete: '/cart/1').to route_to('carts#delete_items', product_id: '1')
     end
   end
-end 
+end

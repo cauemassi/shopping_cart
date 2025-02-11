@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe MarkCartAsAbandonedJob, type: :job do
   describe '#perform' do
     let!(:recent_cart) { FactoryBot.create(:shopping_cart, abandoned: false, last_interaction_at: 2.hours.ago) }
     let!(:old_cart) { FactoryBot.create(:shopping_cart, abandoned: false, last_interaction_at: 4.hours.ago) }
-    let!(:already_abandoned_cart) { FactoryBot.create(:shopping_cart, abandoned: true, last_interaction_at: 5.hours.ago) }
+    let!(:already_abandoned_cart) do
+      FactoryBot.create(:shopping_cart, abandoned: true, last_interaction_at: 5.hours.ago)
+    end
 
     it 'marks old carts as abandoned' do
       expect(old_cart.abandoned).to be_falsey
